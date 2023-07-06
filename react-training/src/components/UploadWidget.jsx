@@ -1,13 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { useState } from 'react'
 
-
-
-const UploadWidget = ({cloud,preset}) => {
+const UploadWidget = ({cloud,preset,setImgUrl,setPublicId}) => {
 
     const cloudinaryRef = useRef();
     const widgetRef = useRef();
-    const [imgUrl, setImgUrl] = useState("");
 
      useEffect( () => {
         cloudinaryRef.current = window.cloudinary;
@@ -16,16 +12,15 @@ const UploadWidget = ({cloud,preset}) => {
             uploadPreset: preset
         }, function(error, result){
             console.log(result);
-            setImgUrl(result.info.secure_url);
+            if (result.info.secure_url) {
+                console.log("Setting imgUrl to " + result.info.secure_url + "and publicId to " + result.info.public_id);
+                setImgUrl(result.info.secure_url);
+                setPublicId(result.info.public_id);
+            }
             
         });
         widgetRef.current.open();
     }, []) 
-    return (
-        <>
-        <img src={imgUrl}></img>
-        </>
-    )
 }
 
 export default UploadWidget
